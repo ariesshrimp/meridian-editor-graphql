@@ -8,9 +8,10 @@ import {
   GraphQLID
 } from 'graphql'
 import { Observer } from './Observer'
+import { Location } from './Location'
 
-const KindOfBeacon = new GraphQLEnumType({
-  name: 'KindOfBeacon',
+const BeaconPurpose = new GraphQLEnumType({
+  name: 'BeaconPurpose',
   values: {
     LOCATION: {value: 'location_beacon'},
     PROXIMITY: {value: 'proximity_beacon'}
@@ -33,7 +34,17 @@ export const Beacon = new GraphQLObjectType({
     host: {type: GraphQLString},
     hw_type: {type: GraphQLString},
     local_apb: {type: GraphQLBoolean},
-    location: {type: GraphQLID},
+    location: {
+      type: Location,
+      resolve: async ({ location }, args, context) => {
+        if (location) {
+          const key = JSON.stringify({ id: location })
+          const results = await context.loader.locations.load(key)
+          return results
+        }
+        else return null
+      },
+    },
     major: {type: GraphQLFloat},
     managed: {type: GraphQLBoolean},
     map: {type: GraphQLID},
@@ -43,9 +54,13 @@ export const Beacon = new GraphQLObjectType({
     name: {type: GraphQLString},
     observer: {
       type: Observer,
-      resolve: async (beacon, params, context) => {
-        const results = await context.loader.observer.load(beacon.location)
-        return results[0]
+      resolve: async ({ observer, location }, args, context) => {
+        if (observer) {
+          const key = JSON.stringify({ observer, location })
+          const results = await context.loader.observers.load(key)
+          return results
+        }
+        else return null
       }
     },
     rssi: {type: GraphQLFloat},
@@ -57,7 +72,7 @@ export const Beacon = new GraphQLObjectType({
     created: {type: GraphQLString},
     mac: {type: GraphQLID},
     modified: {type: GraphQLString},
-    type: {type: KindOfBeacon}
+    type: {type: BeaconPurpose}
   })
 })
 

@@ -4,7 +4,8 @@ import {
   GraphQLFloat,
   GraphQLBoolean,
   GraphQLList,
-  GraphQLID
+  GraphQLID,
+  GraphQLNonNull
 } from 'graphql'
 import { Beacon } from './Beacon'
 
@@ -32,10 +33,15 @@ export const Location = new GraphQLObjectType({
     appviewer_version: {type: GraphQLString},
     beacons: {
       type: new GraphQLList(Beacon),
-      resolve: async (location, params, context) => {
-        const results = await context.loader.beacons.load(location.id)
+      args: {
+        count: {name: 'count', type: new GraphQLNonNull(GraphQLFloat)}
+      },
+      resolve: async (location, { count = 100 }, context) => {
+        const key = JSON.stringify({ location: location.id, count })
+        const results = await context.loader.beacons.load(key)
         return results
-      }},
+      }
+    },
     created: {type: GraphQLString},
     default_language: {type: GraphQLString},
     domain: {type: GraphQLString},
@@ -63,7 +69,6 @@ export const Location = new GraphQLObjectType({
     rtls_ssid: {type: GraphQLString},
     search_examples: {type: new GraphQLList(GraphQLString)},
     theme: {type: Theme},
-    timezone: {type: GraphQLString},
-    users: {type: new GraphQLList(GraphQLString)}
+    timezone: {type: GraphQLString}
   })
 })
