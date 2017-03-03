@@ -8,6 +8,7 @@ import {
   GraphQLNonNull
 } from 'graphql'
 import { Beacon } from './Beacon'
+import { Organization } from './Organization'
 
 const Theme = new GraphQLObjectType({
   name: 'Theme',
@@ -60,7 +61,7 @@ export const Location = new GraphQLObjectType({
     modified: {type: GraphQLString},
     name: {type: GraphQLString},
     namespace: {type: GraphQLString},
-    org: {type: GraphQLString},
+    organization: {type: Organization},
     phone: {type: GraphQLString},
     proximity_beacon_uuid: {type: GraphQLString},
     radius: {type: GraphQLFloat},

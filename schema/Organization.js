@@ -5,6 +5,7 @@ import {
   GraphQLID,
   GraphQLList,
   GraphQLBoolean,
+  GraphQLNonNull
 } from 'graphql'
 import R from 'ramda'
 
@@ -48,8 +49,12 @@ export const Organization = new GraphQLObjectType({
         count: {name: 'count', type: new GraphQLNonNull(GraphQLFloat)}
       },
       resolve: async ({ users }, { count = 100 }, context) => {
-        const keys = R.pluck('id')
-        const results = await context.loader.users.loadMany(keys(users))
+        const keys = R.compose(
+          R.take(count),
+          R.pluck('id')
+        )(users)
+
+        const results = await context.loader.users.loadMany(users)
         return results
       }
     },

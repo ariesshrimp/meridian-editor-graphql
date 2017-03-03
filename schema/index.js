@@ -64,9 +64,9 @@ export default new GraphQLSchema({
       organizations: {
         type: new GraphQLList(Organization),
         args: {
-          id: {name: 'id', type: new GraphQLNonNull(GraphQLID)}
+          count: {name: 'count', type: new GraphQLNonNull(GraphQLFloat)}
         },
-        resolve: async (root, { count }, context) => {
+        resolve: async (root, { count = 100 }, context) => {
           const key = JSON.stringify({ count })
           const data = await context.loader.organizations.load(key)
           return data
