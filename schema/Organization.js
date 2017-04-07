@@ -49,12 +49,16 @@ export const Organization = new GraphQLObjectType({
         count: {name: 'count', type: new GraphQLNonNull(GraphQLFloat)}
       },
       resolve: async ({ users }, { count = 100 }, context) => {
-        const keys = R.compose(
-          R.take(count),
-          R.pluck('id')
-        )(users)
+        console.log(users);
+        
+        const keys = users.map((user) => {
+          return JSON.stringify({
+            id: user,
+            count,
+          });
+        })
 
-        const results = await context.loader.users.loadMany(users)
+        const results = await context.loader.users.loadMany(keys)
         return results
       }
     },
