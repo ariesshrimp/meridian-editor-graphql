@@ -1,4 +1,6 @@
 # Meridian Editor GraphQL
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/joefraley/meridian-editor-graphql.svg)](https://greenkeeper.io/)
 A Node GraphQL wrapper around Meridian's Python REST API.
 
 ![GraphiQL Interface Screenshot](https://www.evernote.com/l/Ae_dZrXHxzdFu5eXjwT1QTUbhx-b9MMP5dIB/image.png)
